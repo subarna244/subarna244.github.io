@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Input Alert Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .container {
+            margin-bottom: 10px;
+        }
+        button {
+            margin-left: 5px;
+        }
+        #output {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            margin-top: 20px;
+        }
+        .item {
+            background-color: white;
+            border: 2px solid black;
+            padding: 5px;
+            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            height: 50px;
+            width: 50px;
+            cursor: pointer; 
+        }
+        .inserted {
+            background-color: green; 
+        }
+        .deleted {
+            background-color: red;
+        }
+        .printed {
+            background-color: white;
+        }
+        .highlighted {
+            background-color: yellow; 
+        }
+        .disabled {
+            background-color: lightgray; 
+            cursor: not-allowed; 
+        }
+        .message {
+            margin-top: 10px;
+            font-weight: bold;
+            color: black; 
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <label for="inputValue">Enter Array Item:</label>
+        <input type="text" id="inputValue">
+        <button onclick="Insert()">Insert</button>
+        <button onclick="Delete()">Delete</button>
+        <button onclick="Find()">Find</button>
+        <button onclick="Print()">Print</button><br>
+        <label id="emptyMessage">Array is empty</label>
+        <div id="message"></div> 
+    </div>
+
+    <div id="output"></div>
+
+    <script>
+        const array = [];
+        document.getElementById('emptyMessage').style.display = 'block'; 
+
+        function Insert() {
+            const input = document.getElementById('inputValue').value.trim();
+            if (input) {
+                if (array.includes(input)) {
+                    alert("This value already exists in the array.");
+                    return;
+                }
+                
+                
+                const outputDiv = document.getElementById('output');
+                Array.from(outputDiv.children).forEach(item => {
+                    item.className = 'item'; // 
+                });
+
+               
+                array.push(input);
+                const newElement = document.createElement('div');
+                newElement.textContent = input;
+                newElement.className = 'item inserted'; 
+                newElement.id = input;
+                outputDiv.appendChild(newElement);
+                document.getElementById('inputValue').value = '';
+                document.getElementById('emptyMessage').style.display = 'none'; 
+            } else {
+                alert("Please enter a value.");
+            }
+        }
+
+        function Delete() {
+            const input = document.getElementById('inputValue').value.trim();
+            if (input) {
+                const index = array.indexOf(input);
+                if (index > -1) {
+                    const existingElement = document.getElementById(input);
+                    if (existingElement) {
+                        document.getElementById('message').textContent = `Deleting item: ${input}`; 
+                        existingElement.className = 'item deleted'; 
+                        setTimeout(() => {
+                            existingElement.remove(); 
+                            array.splice(index, 1); 
+                            document.getElementById('message').textContent = '';
+                            if (array.length === 0) {
+                                document.getElementById('emptyMessage').style.display = 'block'; 
+                            }
+                        }, 500); 
+                    }
+                } else {
+                    alert("Value not found in array.");
+                }
+                document.getElementById('inputValue').value = '';
+            } else {
+                alert("Please enter a value to delete.");
+            }
+        }
+
+        function Find() {
+            const input = document.getElementById('inputValue').value.trim();
+            if (input) {
+                const index = array.indexOf(input);
+                if (index > -1) {
+                    const existingElement = document.getElementById(input);
+                    if (existingElement) {
+                        existingElement.className = 'item highlighted';
+                    }
+                    document.getElementById('inputValue').value = '';
+                } else {
+                    alert("Value not found in array.");
+                }
+            } else {
+                alert("Please enter a value to search.");
+            }
+        }
+
+        function Print() {
+            const outputDiv = document.getElementById('output');
+            outputDiv.innerHTML = '';
+            if (array.length === 0) {
+                document.getElementById('emptyMessage').style.display = 'block';
+            } else {
+                array.forEach(item => {
+                    const newElement = document.createElement('div');
+                    newElement.textContent = item;
+                    newElement.className = 'item printed';
+                    newElement.id = item;
+                    outputDiv.appendChild(newElement);
+                });
+                document.getElementById('emptyMessage').style.display = 'none';
+            }
+        }
+    </script>
+
+</body>
+</html>
